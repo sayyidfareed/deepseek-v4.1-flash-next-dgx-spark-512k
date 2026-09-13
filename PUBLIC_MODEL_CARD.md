@@ -16,7 +16,10 @@ tags:
 - speculative-decoding
 ---
 
-# 512K DeepSeek-V4.1-Flash on one 128 GB DGX Spark
+# DeepSeek-V4.1-Flash-Next-DGX-Spark-512K
+
+**A self-contained, 512K-qualified DeepSeek-V4.1-Flash deployment for one 128
+GB NVIDIA DGX Spark.**
 
 On an ASUS GX10, this fixed K154 release handled a 524,293-token prompt,
 returned all five buried values, and generated 44 more tokens. Warm short coding
