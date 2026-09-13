@@ -15,13 +15,56 @@ class PublicK154ContractTests(unittest.TestCase):
         launcher = (ROOT / "scripts" / "k154_entrypoint.sh").read_text()
         compose = (ROOT / "compose.k154.yaml").read_text()
         server = (ROOT / "server" / "app.py").read_text()
-        self.assertIn(f'SERVED_MODEL_NAME:={name}', launcher)
+        self.assertIn(f'readonly SERVED_MODEL_NAME="{name}"', launcher)
         self.assertIn(f"MODEL_DIR: /models/{name}", compose)
         self.assertIn('HOST:=127.0.0.1', launcher)
         self.assertIn('ports: ["127.0.0.1:${PORT:-8000}:8000"]', compose)
         self.assertIn('${MODEL_PARENT:?set MODEL_PARENT}:/models:ro', compose)
         self.assertIn('HOST: 0.0.0.0', compose)
         self.assertIn('"owned_by": "sayyidfareed"', server)
+
+    def test_launcher_forces_the_qualified_inference_profile(self):
+        launcher = (ROOT / "scripts" / "k154_entrypoint.sh").read_text()
+        fixed = {
+            "MODEL_DIR": "/models/DeepSeek-V4.1-Flash-Next-DGX-Spark-512K",
+            "SERVED_MODEL_NAME": "DeepSeek-V4.1-Flash-Next-DGX-Spark-512K",
+            "MAX_SEQ": "1048576",
+            "ARENA_GB": "89.16",
+            "KEEP_FREE_GB": "2.5",
+            "SPEC": "1",
+        }
+        for name, value in fixed.items():
+            self.assertIn(f'readonly {name}="{value}"', launcher)
+            self.assertNotIn(f'${{{name}:=', launcher)
+
+        env = {
+            "DSV41_DENSE_FP4": "attn,wo_a",
+            "DSV41_HEAD_FMT": "fp8",
+            "DSV41_HEAD_FP32": "0",
+            "DSV41_PREFILL_CHUNK": "256",
+            "DSV41_RING": "4096",
+            "DSV41_SWA_REPLAY": "1",
+            "DSV41_TOPK": "6",
+            "DSV41_BLOCK": "5",
+            "DSV41_FAST_REFERENCE_SHAPES": "0",
+            "DSV41_MEM_FLOOR_GB": "2.5",
+            "DSV41_DENSE_FP8": "1",
+            "DSV41_WOA_FP8": "1",
+            "DSV41_FP4_DENSE_PREFILL": "kernel",
+            "DSV41_FP4_DENSE_F16": "1",
+            "DSV41_CB3_PREFILL": "fp4",
+            "DSV41_CB3_PREFILL_MIN_P": "65",
+            "DSV41_FAST": "1",
+            "DSV41_GRAPHS": "1",
+            "DSV41_LUT": "1",
+            "DSV41_HC_KERNEL": "1",
+            "DSV41_FUSED_ATTN": "0",
+            "DSV41_GRAPH_SEGMENTS": "1",
+            "DSV41_LEAN_STEP": "1",
+            "DSV41_CYCLE_BREAK": "1",
+        }
+        for name, value in env.items():
+            self.assertIn(f'export {name}="{value}"', launcher)
 
     def test_engine_pack_path_verifies_all_weights_and_uses_cb3(self):
         source = (ROOT / "engine" / "v41_engine.py").read_text()
