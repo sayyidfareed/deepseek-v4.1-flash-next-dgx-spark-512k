@@ -2,7 +2,7 @@ FROM nvidia/cuda:13.0.2-devel-ubuntu24.04@sha256:450d11555d20ac8ebbbc13ebf17589c
 ARG TORCH_VERSION=2.13.0
 ENV DEBIAN_FRONTEND=noninteractive PIP_NO_CACHE_DIR=1 PATH=/opt/venv/bin:/usr/local/cuda/bin:$PATH \
     TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas TOKENIZERS_PARALLELISM=false PYTHONUNBUFFERED=1
-RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv curl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-dev python3-venv curl && rm -rf /var/lib/apt/lists/*
 RUN python3 -m venv /opt/venv && pip install --upgrade pip wheel setuptools && \
     pip install "torch==${TORCH_VERSION}+cu130" --index-url https://download.pytorch.org/whl/cu130
 WORKDIR /app

@@ -12,8 +12,16 @@ FORBIDDEN_PREFIXES = ("corpus/", "results/", "bench/", "docs/", "scripts/diag", 
 
 
 def main() -> None:
+    dockerfile = (ROOT / "Dockerfile.k154").read_text()
+    install_line = next(
+        (line for line in dockerfile.splitlines() if "apt-get install" in line),
+        "",
+    )
+    if "python3-dev" not in install_line.split():
+        raise SystemExit("ERROR: Docker image lacks Python headers required by Triton JIT")
+
     copied: set[str] = set()
-    for raw in (ROOT / "Dockerfile.k154").read_text().splitlines():
+    for raw in dockerfile.splitlines():
         line = raw.strip()
         if not line.startswith("COPY "):
             continue
