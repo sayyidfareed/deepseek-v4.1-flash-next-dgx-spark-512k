@@ -1,0 +1,4 @@
+This distribution contains two independently licensed components.
+
+1. Runtime code derived from 0xBakeer's deepseek-v41-flash-spark is MIT licensed; retain LICENSE and CREDITS.md.
+2. DeepSeek-V4.1-Flash weights, tokenizer, encoding, configuration, and reference materials retain the upstream DeepSeek license distributed with that checkpoint. Download and redistribution must preserve that upstream license and any accompanying notices. This runtime's MIT license does not grant additional rights in those materials.

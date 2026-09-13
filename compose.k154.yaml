@@ -1,0 +1,23 @@
+services:
+  deepseek-v41-flash-next-k154:
+    build:
+      context: .
+      dockerfile: Dockerfile.k154
+    image: deepseek-v41-flash-next-dgx-spark-512k:local
+    ports: ["127.0.0.1:${PORT:-8000}:8000"]
+    volumes: ["${MODEL_PARENT:?set MODEL_PARENT}:/models:ro"]
+    environment:
+      # Container-local bind; the published host port above remains loopback-only.
+      HOST: 0.0.0.0
+      MODEL_DIR: /models/DeepSeek-V4.1-Flash-Next-DGX-Spark-512K
+      MAX_SEQ: ${MAX_SEQ:-1048576}
+      ARENA_GB: ${ARENA_GB:-89.16}
+      KEEP_FREE_GB: ${KEEP_FREE_GB:-2.5}
+    ipc: host
+    ulimits:
+      memlock: -1
+      nofile: 65536
+    deploy:
+      resources:
+        reservations:
+          devices: [{driver: nvidia, count: all, capabilities: [gpu]}]

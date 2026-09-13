@@ -1,0 +1,45 @@
+# Files permitted in the public runtime repository/release bundle.
+# Generate the public repository from this allowlist; do not copy corpus, results,
+# caches, local environment files, containers, or diagnostic-only probes.
+LICENSE
+NOTICE
+CREDITS.md
+CITATION.cff
+VERSION
+PUBLIC_RELEASE.md
+PUBLIC_MODEL_CARD.md
+PUBLIC_SOURCE_ALLOWLIST.txt
+Dockerfile.k154
+compose.k154.yaml
+requirements-k154.txt
+bench/long_context_probe.py
+engine/__init__.py
+engine/codebook_sim.py
+engine/engram.py
+engine/experts.py
+engine/fastdecode.py
+engine/hc_sinkhorn.py
+engine/model.py
+engine/moe_fallback.py
+engine/prepacked_cb3.py
+engine/v41_engine.py
+engine/test_prepacked_cb3.py
+engine/test_public_k154_contract.py
+server/app.py
+server/engine_api.py
+server/tool_grammar.py
+scripts/k154_entrypoint.sh
+scripts/test_k154_entrypoint.sh
+tools/cb3.py
+tools/cb3_moe.py
+tools/decode_attn.py
+tools/fp4_linear.py
+tools/fp4_moe.py
+tools/fp8_linear.py
+tools/v41_ref.py
+tools/export_k154_cb3.py
+tools/capture_k154_selection.py
+tools/check_public_release.py
+tools/assemble_public_release.py
+tools/test_docker_k154_context.py
+k154-cb3/k154-selection.json

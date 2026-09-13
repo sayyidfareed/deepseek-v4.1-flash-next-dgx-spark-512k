@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If this release helps your work, cite this repository and Khaled Bakeer's upstream DeepSeek-V4.1 Spark runtime."
+title: "DeepSeek-V4.1-Flash-Next-DGX-Spark-512K"
+type: software
+abstract: >-
+  A self-contained fixed-expert DeepSeek-V4.1-Flash deployment for one 128 GB
+  NVIDIA DGX Spark. The release packages a deterministic K154 CB3-v2 expert
+  set, removes the superseded main routed-expert tensors, and is qualified at
+  524,293 prompt tokens.
+authors:
+  - name: "sayyidfareed"
+repository-code: "https://github.com/sayyidfareed/deepseek-v4.1-flash-next-dgx-spark-512k"
+url: "https://huggingface.co/sayyidfareed/DeepSeek-V4.1-Flash-Next-DGX-Spark-512K"
+license: MIT
+version: 1.0.0
+date-released: "2026-09-12"
+keywords:
+  - DeepSeek-V4.1-Flash
+  - DGX Spark
+  - GB10
+  - 512K context
+  - mixture-of-experts
+  - CB3
+  - speculative decoding
+references:
+  - type: software
+    title: "DeepSeek-V4.1-Flash"
+    authors:
+      - name: "DeepSeek-AI"
+    url: "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash"
+    year: 2026
+  - type: software
+    title: "deepseek-v41-flash-spark"
+    authors:
+      - family-names: Bakeer
+        given-names: Khaled
+        alias: 0xBakeer
+    url: "https://github.com/0xBakeer/deepseek-v41-flash-spark"
+    year: 2026

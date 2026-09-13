@@ -1,0 +1,21 @@
+FROM nvidia/cuda:13.0.2-devel-ubuntu24.04@sha256:450d11555d20ac8ebbbc13ebf17589c2bd42869171a90179ce7098b4a5e64c6a
+ARG TORCH_VERSION=2.13.0
+ENV DEBIAN_FRONTEND=noninteractive PIP_NO_CACHE_DIR=1 PATH=/opt/venv/bin:/usr/local/cuda/bin:$PATH \
+    TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas TOKENIZERS_PARALLELISM=false PYTHONUNBUFFERED=1
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv curl && rm -rf /var/lib/apt/lists/*
+RUN python3 -m venv /opt/venv && pip install --upgrade pip wheel setuptools && \
+    pip install "torch==${TORCH_VERSION}+cu130" --index-url https://download.pytorch.org/whl/cu130
+WORKDIR /app
+COPY requirements-k154.txt /app/
+COPY compose.k154.yaml PUBLIC_SOURCE_ALLOWLIST.txt Dockerfile.k154 /app/
+COPY engine/__init__.py engine/codebook_sim.py engine/engram.py engine/experts.py engine/fastdecode.py engine/hc_sinkhorn.py engine/model.py engine/moe_fallback.py engine/prepacked_cb3.py engine/v41_engine.py engine/test_prepacked_cb3.py engine/test_public_k154_contract.py /app/engine/
+COPY tools/cb3.py tools/cb3_moe.py tools/decode_attn.py tools/fp4_linear.py tools/fp4_moe.py tools/fp8_linear.py tools/v41_ref.py tools/export_k154_cb3.py tools/capture_k154_selection.py tools/check_public_release.py tools/test_docker_k154_context.py /app/tools/
+COPY server/app.py server/engine_api.py server/tool_grammar.py /app/server/
+COPY scripts/k154_entrypoint.sh scripts/test_k154_entrypoint.sh /app/scripts/
+COPY k154-cb3/k154-selection.json /app/k154-cb3/
+RUN pip install -r requirements-k154.txt && chmod +x scripts/k154_entrypoint.sh scripts/test_k154_entrypoint.sh && \
+    python3 -m unittest engine.test_prepacked_cb3 engine.test_public_k154_contract && scripts/test_k154_entrypoint.sh && \
+    python3 tools/test_docker_k154_context.py
+VOLUME ["/models"]
+EXPOSE 8000
+ENTRYPOINT ["/app/scripts/k154_entrypoint.sh"]
